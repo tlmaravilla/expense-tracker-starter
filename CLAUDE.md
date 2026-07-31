@@ -13,12 +13,15 @@ npm run preview  # Preview production build
 
 ## Architecture
 
-This is a single-file React app (`src/App.jsx`) with no routing, no external state management, and no backend. All state lives in `App` via `useState`.
+React app with no routing, no external state management, and no backend. `transactions` state (and the `categories` list) lives in `App` (`src/App.jsx`) and is passed down as props; each child component owns its own local UI state.
 
-**Data model** — each transaction has: `id`, `description`, `amount` (string), `type` (`"income"` | `"expense"`), `category`, `date`.
+- `src/App.jsx` — top-level state (`transactions`) and the `handleAddTransaction` updater; composes `Summary`, `TransactionForm`, and `TransactionList`.
+- `src/Summary.jsx` — takes `transactions` as a prop and derives `totalIncome`, `totalExpenses`, and `balance` internally.
+- `src/TransactionForm.jsx` — owns its own form field state (`description`, `amount`, `type`, `category`) and calls the `onAddTransaction` prop with the new transaction on submit.
+- `src/TransactionList.jsx` — owns its own filter state (`filterType`, `filterCategory`) and renders the filtered transaction table; takes `transactions` and `categories` as props.
+
+**Data model** — each transaction has: `id`, `description`, `amount` (number), `type` (`"income"` | `"expense"`), `category`, `date`.
 
 **Known issues (intentional, part of the course):**
 
-- `amount` is stored as a string, causing the income/expense/balance summaries to concatenate instead of add
 - The UI needs styling improvements
-- Code is intentionally unrefactored — components have not been extracted yet
